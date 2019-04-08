@@ -1,5 +1,6 @@
 # NEURAL NETWORKS DEMO 1
 This demo shows the capabilities of neural networks.  
+Live demo: https://jjcapellan.github.io/nn-demo1/
 
 There is a population of 50 neural networks that was trained for 60 generations through a genetic algorithm (NeuroEvolution of Augmenting Topologies).  
 Each neural network controls a triangle.
@@ -38,14 +39,19 @@ let NN = {
 // Network creation from a JSON object
 let myNetwork = neataptic.Network.fromJSON(NN);
 
+// Takes the needed data
 let input = captureData(); // returns [1, 1, 1, 1, 0.6, 1, 0.8, 1]
 
+// The network calculates the output
 let output = myNetwork.activate(input); // returns [0.9, 0.3]
+
+// Analyzing the output, the correct action is executed
 if(output[0] > 0.5 && output[0] >0 output[1]){
     turnLeft();
 } else if (output[1] > 0.5){
     turnRight();
-} // The result will be turn left
+} 
+// The result will be "turn left"
 ```
 
 
