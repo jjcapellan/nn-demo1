@@ -101,17 +101,28 @@ class Ship extends Phaser.Physics.Arcade.Image {
     let t = this;
     // Initial value of sensors [1,1,1, ...,1]
     let inputs = this.initArray(this.inputsAmount);
+    this.checkGroup(this.scene.asteroids.getChildren(), inputs);
+    //this.checkGroup(this.scene.ships.getChildren(), inputs);
 
-    let shipAngle = this.rotation; // In radians. Valid because in this case angle of velocity = this.rotation
+    return inputs;
+  }
 
-    // Takes data of asteroids
-    let asteroids = this.scene.asteroids.getChildren();
-    for (let i = 0, j = asteroids.length; i < j; i++) {
-      let asteroid = asteroids[i];
+  /**
+   * Checks a group of objects to capture input data.
+   * @param {object[]} group 
+   * @param {number[]} inputs 
+   */
+  checkGroup(group,inputs){
+    let shipAngle = this.rotation;
+    for (let i = 0, j = group.length; i < j; i++) {
+      let agent = group[i];
+      if(this === agent){
+        continue;
+      }
       // The ship is wrapped to the screen so for each obstacle there is a "gosth obstacle"
       // What X and Y are closest?
-      let ast_x = asteroid.x;
-      let ast_y = asteroid.y;
+      let ast_x = agent.x;
+      let ast_y = agent.y;
       let ast_xr = this.x > ast_x ? this.scene.game.config.width + ast_x : ast_x - this.scene.game.config.width;
       let ast_yr = this.x > ast_x ? this.scene.game.config.height + ast_y : ast_y - this.scene.game.config.height;
 
@@ -123,23 +134,23 @@ class Ship extends Phaser.Physics.Arcade.Image {
       }
 
       // Is the point near to activate some sensor?
-      let distance = Phaser.Math.Distance.Between(ast_x, ast_y, this.x, this.y) - asteroid.body.halfWidth;
+      let distance = Phaser.Math.Distance.Between(ast_x, ast_y, this.x, this.y) - agent.body.halfWidth;
       if (distance > this.scene.detectionRadius) {
         continue;
       }
 
       // The angle determines which sensor is activated.
-      let angleShipAsteroid = Phaser.Math.Angle.Between(this.x, this.y, ast_x, ast_y) + shipAngle * -1;
+      let angleShipAgent = Phaser.Math.Angle.Between(this.x, this.y, ast_x, ast_y) + shipAngle * -1;
 
-      if (angleShipAsteroid < 0) {
-        angleShipAsteroid += Phaser.Math.PI2;
+      if (angleShipAgent < 0) {
+        angleShipAgent += Phaser.Math.PI2;
       }
 
       distance = this.normalizePixels(distance, this.scene.detectionRadius, 0);
 
       let angles = this.sensorAngles.length;
       for (let i = 0; i < angles; i++) {
-        if (angleShipAsteroid < this.sensorAngles[i]) {
+        if (angleShipAgent < this.sensorAngles[i]) {
           if (distance < inputs[i]) {
             inputs[i] = distance;
             break;
@@ -147,8 +158,6 @@ class Ship extends Phaser.Physics.Arcade.Image {
         }
       }
     } // end for
-
-    return inputs;
   }
 
   compare(a, b) {
