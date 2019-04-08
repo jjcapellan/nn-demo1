@@ -36,7 +36,7 @@ class Ship extends Phaser.Physics.Arcade.Image {
     this.brain.score = 0;
   }
 
-  setInputsAmount(value){
+  setInputsAmount(value) {
     this.inputsAmount = value;
     this.initAngles(this.inputsAmount);
   }
@@ -53,7 +53,7 @@ class Ship extends Phaser.Physics.Arcade.Image {
   initAngles(amount) {
     let angle = 0;
     let sensorStep = Phaser.Math.PI2 / amount;
-    for (let i = 0; i < (amount - 1); i++) {
+    for (let i = 0; i < amount - 1; i++) {
       angle += sensorStep;
       this.sensorAngles.push(angle);
     }
@@ -102,7 +102,9 @@ class Ship extends Phaser.Physics.Arcade.Image {
     // Initial value of sensors [1,1,1, ...,1]
     let inputs = this.initArray(this.inputsAmount);
     this.checkGroup(this.scene.asteroids.getChildren(), inputs);
-    //this.checkGroup(this.scene.ships.getChildren(), inputs);
+    if (this.scene.checkbox.value) {
+      this.checkGroup(this.scene.ships.getChildren(), inputs);
+    }
 
     return inputs;
   }
@@ -112,11 +114,11 @@ class Ship extends Phaser.Physics.Arcade.Image {
    * @param {object[]} group 
    * @param {number[]} inputs 
    */
-  checkGroup(group,inputs){
+  checkGroup(group, inputs) {
     let shipAngle = this.rotation;
     for (let i = 0, j = group.length; i < j; i++) {
       let agent = group[i];
-      if(this === agent){
+      if (this === agent) {
         continue;
       }
       // The ship is wrapped to the screen so for each obstacle there is a "gosth obstacle"

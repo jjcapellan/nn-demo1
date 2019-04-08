@@ -11,6 +11,7 @@ class Test extends Phaser.Scene {
     this.sensorsAmount = population.learningConditions.INPUTS_SIZE;
 
     this.spawn_margin = this.detectionRadius + 60;
+    this.isSelfDodging = false;
   }
 
   preload(){
@@ -21,6 +22,7 @@ class Test extends Phaser.Scene {
 
   create() {
     let t = this;
+    
 
     this.add.existing(
       new SkyGenerator(this, 800, 600, {
@@ -99,6 +101,10 @@ class Test extends Phaser.Scene {
     
     // Title
     this.add.bitmapText(this.game.config.width/2, 50, 'bmf', 'Neural Networks Demo I', 20).setOrigin(0.5,0);
+
+    // Option for check other ships
+    this.add.bitmapText(85, 550, 'bmf', 'Dodge other triangles', 20);
+    this.checkbox = this.add.existing(new CheckBox(this,50, 550)).setOrigin(0,0);
     
   }
 
